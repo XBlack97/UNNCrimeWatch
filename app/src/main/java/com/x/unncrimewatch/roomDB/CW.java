@@ -1,7 +1,5 @@
 package com.x.unncrimewatch.roomDB;
 
-import android.net.Uri;
-
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -9,7 +7,6 @@ import androidx.room.PrimaryKey;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 
@@ -21,7 +18,7 @@ public class CW {
     private int mId;
     private Date mDate;
     private String mUpdate;
-    private  ArrayList<String> mImageUris;
+    private ArrayList<String> mImageUris;
 
 
     public int getId() {
@@ -40,14 +37,12 @@ public class CW {
         return mUpdate;
     }
 
-    public ArrayList<String> getImageUris(){
+    public ArrayList<String> getImageUris() {
         return mImageUris;
     }
 
 
-
-
-    public CW (Date date, String update, ArrayList<String> imageUris ) {
+    public CW(Date date, String update, ArrayList<String> imageUris) {
         mDate = date;
         mUpdate = update;
         mImageUris = imageUris;
@@ -63,7 +58,7 @@ public class CW {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof CW)
-            return (((CW) obj).getId()==(mId));
+            return (((CW) obj).getId() == (mId));
         else
             return false;
     }

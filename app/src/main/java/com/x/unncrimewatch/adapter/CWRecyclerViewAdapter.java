@@ -115,7 +115,7 @@ public class CWRecyclerViewAdapter extends
             detailsView = view.findViewById(R.id.list_item_update_details);
             imageDetailsView = view.findViewById(R.id.crime_pics_view);
 
-            imageDetailsView.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL,false));
+            imageDetailsView.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
             imageDetailsView.setAdapter(mNewsImageAdapter);
 
 

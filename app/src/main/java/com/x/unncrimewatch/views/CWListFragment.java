@@ -15,9 +15,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.x.unncrimewatch.R;
 import com.x.unncrimewatch.adapter.CWRecyclerViewAdapter;
 import com.x.unncrimewatch.model.CWViewModel;
-import com.x.unncrimewatch.R;
 import com.x.unncrimewatch.roomDB.CW;
 
 import java.util.ArrayList;
@@ -89,12 +89,12 @@ public class CWListFragment extends Fragment {
     }
 
 
-    public void setUpdates(List<CW>  updates) {
+    public void setUpdates(List<CW> updates) {
 
         Updates.clear();
         mUpdateAdapter.notifyDataSetChanged();
 
-        for (CW update: updates) {
+        for (CW update : updates) {
             if (!Updates.contains(update)) {
                 Updates.add(update);
                 mUpdateAdapter.notifyItemInserted(Updates.indexOf(update));

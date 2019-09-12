@@ -109,7 +109,7 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImageViewH
                 File filepath = new File(mPath);
                 File mfiepath = new File(filepath.getAbsolutePath());
                 mfiepath.delete();
-            } catch(Exception e){
+            } catch (Exception e) {
                 System.out.println("Not delete !!!!!!!!!!!");
 
                 e.printStackTrace();

@@ -11,7 +11,6 @@ import com.x.unncrimewatch.roomDB.CWDatabaseAccessor;
 import java.util.List;
 
 
-
 public class CWViewModel extends AndroidViewModel {
 
     private LiveData<List<CW>> updates;

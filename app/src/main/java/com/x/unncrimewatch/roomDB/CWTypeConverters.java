@@ -5,7 +5,6 @@ import android.net.Uri;
 
 import androidx.room.TypeConverter;
 
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -26,19 +25,20 @@ public class CWTypeConverters {
     }
 
     @TypeConverter
-    public static Uri StringToUri(String uri){
+    public static Uri StringToUri(String uri) {
         return uri == null ? null : Uri.parse(uri);
     }
 
     @TypeConverter
-    public static String UriToString(Uri uri){
+    public static String UriToString(Uri uri) {
         return uri == null ? null : uri.toString();
     }
 
     @TypeConverter
     public static ArrayList<String> fromString(String value) {
 
-        Type listType = new TypeToken<ArrayList<String>>() {}.getType();
+        Type listType = new TypeToken<ArrayList<String>>() {
+        }.getType();
 
         return value == null ? null : new Gson().fromJson(value, listType);
     }

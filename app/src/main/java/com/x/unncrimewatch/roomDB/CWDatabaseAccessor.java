@@ -9,7 +9,8 @@ public class CWDatabaseAccessor {
     private static CWDatabase CWDatabaseInstance;
     private static final String CW_DB_NAME = "cw_db";
 
-    private CWDatabaseAccessor() {}
+    private CWDatabaseAccessor() {
+    }
 
     public static CWDatabase getInstance(Context context) {
         if (CWDatabaseInstance == null) {

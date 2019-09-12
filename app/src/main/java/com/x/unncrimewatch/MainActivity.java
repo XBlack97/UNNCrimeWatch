@@ -38,7 +38,7 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        CWListFragment.OnListFragmentInteractionListener{
+        CWListFragment.OnListFragmentInteractionListener {
 
     CWViewModel cwViewModel;
     FileCompressor mCompressor;
@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity
 
     private ArrayList<Image> newsImages = new ArrayList<>();
     private ImagesAdapter mImagesAdapter = new ImagesAdapter(newsImages);
-
 
 
     @Override
@@ -109,10 +108,9 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (getSupportFragmentManager().getBackStackEntryCount()>1){
+        } else if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
             super.onBackPressed();
-        }
-        else{
+        } else {
             finish();
         }
     }
@@ -173,9 +171,8 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
     public void replaceFragment(Fragment fragment) {
-        String backStateName =  fragment.getClass().getName();
+        String backStateName = fragment.getClass().getName();
         String fragmentTag = backStateName;
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

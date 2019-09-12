@@ -1,6 +1,5 @@
 package com.x.unncrimewatch.adapter;
 
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +13,13 @@ import com.x.unncrimewatch.model.Image;
 import java.io.File;
 import java.util.ArrayList;
 
-public class NewsImageAdapter extends RecyclerView.Adapter<NewsImageAdapter.NewsImageViewHolder>{
+public class NewsImageAdapter extends RecyclerView.Adapter<NewsImageAdapter.NewsImageViewHolder> {
 
     private ArrayList<Image> mImages;
     private Image mimage;
     File file;
 
-    public NewsImageAdapter (ArrayList<Image> images) {
+    public NewsImageAdapter(ArrayList<Image> images) {
         mImages = images;
     }
 
@@ -66,7 +65,6 @@ public class NewsImageAdapter extends RecyclerView.Adapter<NewsImageAdapter.News
         }
 
     }
-
 
 
 }
