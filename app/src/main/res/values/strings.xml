@@ -16,23 +16,20 @@
 
     <string name="upload_hint">Report a crime...</string>
 
+    <string name="Emergency_call_AE">A/E</string>
+    <string name="Emergency_call_AE_subText">Adverse Experience</string>
+    <string name="Emergency_call_AE_number">07036885702</string>
+
+
+    <string name="Emergency_call_Ward">Ward</string>
+    <string name="Emergency_call_Ward_subText">Medical Ward</string>
+    <string name="Emergency_call_Ward_number">07061393622</string>
+
+    <string name="Emergency_call_Fire">Fire</string>
+    <string name="Emergency_call_Fire_subText">Fire Department</string>
+    <string name="Emergency_call_Fire_number">07063493677</string>
 
 
 
-    <string name="title_activity_image_viewer">Image Viewer</string>
-    <string name="import_image">Import Image</string>
-    <string name="selected_image">selected image</string>
-    <string name="share">Share</string>
-    <string name="delete">Delete</string>
-    <string name="external_storage_rationale">This app requires reading storage from external
-        directories in order to access images from other sources.</string>
-    <string name="images_header">Welcome to the data privacy codelab.\nThis application stores
-        images \'securely\'. Take a photo or import an image to store it within the app.</string>
-    <string name="empty_text">No images saved yet.\nTake a photo or import an image.</string>
-    <string name="import_images_not_available">No images available for import.</string>
-    <string name="external_storage_permission_required">External storage access is need to store images.</string>
-    <string name="missing_permissions">Missing Permissions</string>
-    <string name="request">Request</string>
-    <string name="no_image_icon">No image icon</string>
 
 </resources>

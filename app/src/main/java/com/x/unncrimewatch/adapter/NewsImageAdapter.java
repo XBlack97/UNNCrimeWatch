@@ -1,34 +1,36 @@
 package com.x.unncrimewatch.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.x.unncrimewatch.R;
 import com.x.unncrimewatch.model.Image;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class NewsImageAdapter extends RecyclerView.Adapter<NewsImageAdapter.NewsImageViewHolder> {
 
     private ArrayList<Image> mImages;
-    private Image mimage;
-    File file;
+    private static final String TAG = "NewsImagesAdapter";
 
-    public NewsImageAdapter(ArrayList<Image> images) {
-        mImages = images;
+    public NewsImageAdapter() {
     }
 
     public void setImages(ArrayList<Image> images) {
+        images.clear();
         mImages = images;
-        notifyDataSetChanged();
+        if (mImages == null)
+            Log.d(TAG, " NewsImageAdapter images = Null");
     }
 
     @Override
+    @NonNull
     public NewsImageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         return new NewsImageViewHolder(LayoutInflater.from(parent.getContext())
@@ -39,13 +41,13 @@ public class NewsImageAdapter extends RecyclerView.Adapter<NewsImageAdapter.News
     @Override
     public void onBindViewHolder(NewsImageViewHolder holder, final int position) {
         holder.bind(mImages.get(position));
+        Log.d(TAG, "onBind = True");
     }
 
     @Override
     public int getItemCount() {
+        Log.d(TAG, "getItemCount = " + mImages.size());
         return mImages.size();
-
-
     }
 
     public class NewsImageViewHolder extends RecyclerView.ViewHolder {
@@ -61,6 +63,8 @@ public class NewsImageAdapter extends RecyclerView.Adapter<NewsImageAdapter.News
 
             imageView.setImageBitmap(image.getImage());
             imageView.setImageURI(image.getSource());
+
+            Log.d(TAG, "setImage and setImageUri Successful");
 
         }
 

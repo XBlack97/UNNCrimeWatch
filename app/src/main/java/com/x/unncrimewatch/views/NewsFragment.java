@@ -23,7 +23,7 @@ import com.x.unncrimewatch.roomDB.CW;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CWListFragment extends Fragment {
+public class NewsFragment extends Fragment {
 
     private ArrayList<CW> Updates = new ArrayList<CW>();
 
@@ -41,21 +41,18 @@ public class CWListFragment extends Fragment {
         void onListFragmentRefreshRequested();
     }
 
-    public CWListFragment() {
+    public NewsFragment() {
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        getActivity().setTitle("News");
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_update_list,
+        View view = inflater.inflate(R.layout.fragment_news_update_list,
                 container, false);
+
+        getActivity().setTitle("News");
+
         mRecyclerView = view.findViewById(R.id.list);
         mSwipeToRefreshView = view.findViewById(R.id.swiperefresh);
 
@@ -73,12 +70,7 @@ public class CWListFragment extends Fragment {
 
         // Setup the Swipe to Refresh view
         mSwipeToRefreshView.setOnRefreshListener(
-                new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        refreshUpdates();
-                    }
-                });
+                () -> refreshUpdates());
     }
 
     protected void refreshUpdates() {

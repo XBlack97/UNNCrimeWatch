@@ -55,6 +55,7 @@ public class CW {
         return mUpdate + "\n" + "\n" + dateString;
     }
 
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof CW)

@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -23,9 +24,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -35,6 +40,8 @@ import com.x.unncrimewatch.BuildConfig;
 import com.x.unncrimewatch.R;
 import com.x.unncrimewatch.adapter.ImagesAdapter;
 import com.x.unncrimewatch.model.Image;
+import com.x.unncrimewatch.roomDB.CW;
+import com.x.unncrimewatch.roomDB.CWDatabaseAccessor;
 import com.x.unncrimewatch.util.FileCompressor;
 
 import java.io.File;
@@ -42,6 +49,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -50,48 +58,57 @@ import static android.app.Activity.RESULT_OK;
 
 public class UploadNewsFragment extends Fragment {
 
-    static final int REQUEST_TAKE_PHOTO = 1;
-    static final int REQUEST_GALLERY_PHOTO = 2;
-    FileCompressor mCompressor;
+    private static final int REQUEST_TAKE_PHOTO = 1, REQUEST_GALLERY_PHOTO = 2;
+    private FileCompressor mCompressor;
     private ImageButton cam;
 
     private RecyclerView mRecyclerView;
     private ArrayList<Image> mImages = new ArrayList<>();
 
     private ImagesAdapter mImagesAdapter = new ImagesAdapter(mImages);
+
     private static final String TAG = "UploadNewsFragment";
     private Bitmap im;
     private Uri photoURI;
-    private File mfilepath, mPhotoFile;
+    private File mPhotoFile, mfilepath, photoFile = null;
     private Object[] mdata = new Object[2];
 
+    private ArrayList<Uri> newsImagesuri = new ArrayList<>();
+    private ArrayList<String> uris_string = new ArrayList<>();
+    private String uriTostring;
+    CW update;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        getActivity().setTitle("Upload news");
-    }
+    FloatingActionButton fab;
+    EditText update_news;
+    String contents;
+    Date now = Calendar.getInstance().getTime();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
         View layout = inflater.inflate(R.layout.upload_news, container, false);
+        getActivity().setTitle("Upload Crime");
 
         mRecyclerView = layout.findViewById(R.id.pic_list);
         mRecyclerView.setAdapter(mImagesAdapter);
         mRecyclerView.setHasFixedSize(true);
 
+        update_news = layout.findViewById(R.id.update_news);
+
+
         cam = layout.findViewById(R.id.camera);
-        cam.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                selectImage();
+        cam.setOnClickListener(view ->
+                selectImage()
+        );
 
-            }
-        });
 
+        fab = getActivity().findViewById(R.id.fab);
+
+        fab.setOnClickListener(view ->
+                upload_crime(view)
+        );
 
         // Inflate the layout for this fragment
         return layout;
@@ -100,7 +117,6 @@ public class UploadNewsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         Context context = view.getContext();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
 
@@ -116,7 +132,7 @@ public class UploadNewsFragment extends Fragment {
      * Alert dialog for capture or select from galley
      */
 
-    public void selectImage() {
+    private void selectImage() {
         final CharSequence[] items = {
                 "Take Photo", "Choose from Library",
                 "Cancel"
@@ -141,7 +157,6 @@ public class UploadNewsFragment extends Fragment {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             // Create the File where the photo should go
-            File photoFile = null;
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
@@ -347,7 +362,7 @@ public class UploadNewsFragment extends Fragment {
                         + uri.toString());
             }
 
-            return null;
+            return image;
         }
 
 
@@ -357,9 +372,76 @@ public class UploadNewsFragment extends Fragment {
             mImagesAdapter.notifyDataSetChanged();
             mRecyclerView.smoothScrollToPosition(mImagesAdapter.getItemCount() - 1);
 
+            Log.d(TAG, "OnPostExecute mImages.size() =" + mImages.size());
 
         }
     }
 
+    public void upload_crime(View view) {
+
+        contents = update_news.getText().toString();
+
+        //if (getUris.getImageUris() != null)
+
+
+        if (contents.isEmpty()) {
+            Snackbar.make(view, "please, type in your emergency", Snackbar.LENGTH_LONG).show();
+        } else {
+            newsImagesuri = mImagesAdapter.getImageUris();
+
+            if (newsImagesuri != null) {
+                Log.d(TAG, "newsImagesuri != null = " + newsImagesuri);
+                for (Uri uri : newsImagesuri) {
+                    uriTostring = uri.toString();
+                    uris_string.add(uriTostring);
+                }
+                Log.d(TAG, "converted uris = " + uris_string);
+
+                update = new CW(now, contents, uris_string);
+                Log.d(TAG, "update contain uri = " + uris_string);
+            } else {
+
+                Log.d(TAG, "newsImagesuri = null");
+
+                update = new CW(now, contents, null);
+            }
+
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    CWDatabaseAccessor
+                            .getInstance(getActivity().getApplication())
+                            .cwDAO()
+                            .insertUpdate(update);
+                }
+            });
+
+            Log.d(TAG, "Database Inserted !!!");
+
+            Snackbar.make(view, "Crime reported successfully...", Snackbar.LENGTH_LONG).show();
+
+            goHome();
+
+        }
+
+    }
+
+    public void goHome(){
+
+        fab.hide();
+
+        Fragment fragment = new NewsFragment();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.main_activity_frame,fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+
+        update_news.setText("");
+        mImages.clear();
+        mImagesAdapter.notifyDataSetChanged();
+
+    }
 }
+
 

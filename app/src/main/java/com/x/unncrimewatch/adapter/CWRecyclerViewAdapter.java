@@ -23,6 +23,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,14 +49,18 @@ public class CWRecyclerViewAdapter extends
     private ArrayList<Image> mImages = new ArrayList<>();
     private ArrayList<String> dbList = new ArrayList<>();
 
-    private NewsImageAdapter mNewsImageAdapter = new NewsImageAdapter(mImages);
+    private ArrayList<Uri> dbUri = new ArrayList<>();
+
+    private NewsImageAdapter mNewsImageAdapter = new NewsImageAdapter();
+
+    private static final String TAG = "CWRecyclerViewAdapter";
 
     public CWRecyclerViewAdapter(List<CW> updates) {
         Updates = updates;
     }
 
     private Bitmap image;
-    private Uri stringToUri;
+    private Uri stringToUri, uri;
 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -74,30 +79,34 @@ public class CWRecyclerViewAdapter extends
         dbList = Updates.get(position).getImageUris();
 
         if (dbList != null) {
-            //holder.imageDetailsView.setVisibility(View.VISIBLE);
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    for (String uri : dbList) {
-                        stringToUri = Uri.parse(uri);
-                        try {
-                            image = MediaStore.Images.Media.getBitmap(ctx.getContentResolver(), stringToUri);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        mImages.add(new Image(stringToUri, image));
+            holder.imageDetailsView.setVisibility(View.VISIBLE);
+            Log.d(TAG, "dbList != Null" + dbList);
+            AsyncTask.execute(() -> {
+                for (String uri : dbList) {
+                    stringToUri = Uri.parse(uri);
+                    try {
+                        image = MediaStore.Images.Media.getBitmap(ctx.getContentResolver(), stringToUri);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+
+                    mImages.add(new Image(stringToUri, image));
                 }
+                Log.d(TAG, "stringToUri, image = " + stringToUri);
             });
-            //mNewsImageAdapter.setImages(mImages);
+            mNewsImageAdapter.setImages(mImages);
+        } else {
+            Log.d(TAG, "getImagesUris = Null");
+            holder.imageDetailsView.setVisibility(View.GONE);
         }
-        //else {holder.imageDetailsView.setVisibility(View.GONE);}
+
 
     }
 
 
     @Override
     public int getItemCount() {
+        Log.d(TAG, "CW getItemCount = " + Updates.size());
         return Updates.size();
     }
 
@@ -113,9 +122,10 @@ public class CWRecyclerViewAdapter extends
             ctx = view.getContext();
             parentView = view;
             detailsView = view.findViewById(R.id.list_item_update_details);
-            imageDetailsView = view.findViewById(R.id.crime_pics_view);
+            imageDetailsView = view.findViewById(R.id.crime_pic_view);
 
             imageDetailsView.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
+            imageDetailsView.setHasFixedSize(true);
             imageDetailsView.setAdapter(mNewsImageAdapter);
 
 

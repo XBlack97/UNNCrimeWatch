@@ -35,15 +35,13 @@
                 android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/crime_pics_view"
+                android:id="@+id/crime_pic_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="300dp"
                 android:layout_below="@+id/list_item_update_details"
-                android:layout_alignParentBottom="true"
-                android:layout_marginTop="35dp"
-                android:layout_marginBottom="-6dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                android:orientation="horizontal" />
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp" />
+
 
         </RelativeLayout>
 

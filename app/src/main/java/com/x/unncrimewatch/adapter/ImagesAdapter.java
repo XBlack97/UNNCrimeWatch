@@ -17,12 +17,14 @@
 package com.x.unncrimewatch.adapter;
 
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.x.unncrimewatch.R;
@@ -37,22 +39,25 @@ import java.util.ArrayList;
  */
 public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImageViewHolder> {
 
-    private ArrayList<Image> mImages;
+    private ArrayList<Image> mImages = new ArrayList<>();
     private ArrayList<Uri> mImagesUri = new ArrayList<>();
-    private Image mimage;
     private Uri uris;
+
+    private String mPath;
+    private File filepath;
+
+    private static final String TAG = "ImagesAdapter";
 
     public ImagesAdapter(ArrayList<Image> images) {
         mImages = images;
-    }
 
-    public void setImages(ArrayList<Image> images) {
-        mImages = images;
-        notifyDataSetChanged();
+        if (mImages == null)
+            Log.d(TAG, "ImagesAdapter mImages = null");
+
     }
 
     @Override
-    public ImageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         return new ImageViewHolder(LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_pic_update, parent, false));
@@ -62,17 +67,18 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImageViewH
     @Override
     public void onBindViewHolder(ImageViewHolder holder, final int position) {
         holder.bind(mImages.get(position));
-        holder.cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int rpos = holder.getAdatpterpos();
-                holder.removeAt(rpos, mImages.get(position).getSource());
-            }
+        holder.cancel.setOnClickListener(view -> {
+            int rpos = holder.getAdatpterpos();
+            removeAt(rpos, mImages.get(position).getSource(), view);
+
+            Log.d(TAG, "imagesAdapter position = " + position);
         });
     }
 
     @Override
     public int getItemCount() {
+
+        Log.d(TAG, "imagesAdapter getItemCount = " + mImages.size());
         return mImages.size();
 
 
@@ -89,6 +95,7 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImageViewH
 
             imageView = itemView.findViewById(R.id.news_pic_update_details);
             cancel = itemView.findViewById(R.id.cancel_image);
+
         }
 
         public void bind(Image image) {
@@ -96,46 +103,63 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImageViewH
             imageView.setImageBitmap(image.getImage());
             imageView.setImageURI(image.getSource());
 
+            Log.d(TAG, "imagesAdapter bind successful");
+
         }
 
         public int getAdatpterpos() {
             return getAdapterPosition();
         }
 
-        public void removeAt(int position, Uri path) {
+    }
 
-            try {
-                String mPath = path.toString();
-                File filepath = new File(mPath);
-                File mfiepath = new File(filepath.getAbsolutePath());
-                mfiepath.delete();
-            } catch (Exception e) {
-                System.out.println("Not delete !!!!!!!!!!!");
 
-                e.printStackTrace();
-            }
+    public void removeAt(int position, Uri path, View view) {
 
-            mImages.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, mImages.size());
+        try {
+            String mPath = path.toString();
+            File filepath = new File(mPath);
+            File mfiepath = new File(filepath.getAbsolutePath());
+            mfiepath.delete();
+        } catch (Exception e) {
+            System.out.println("Not delete !!!!!!!!!!!");
 
+            //Log.e(TAG, "No Delete !!" + mPath + mfilepath);
+            e.printStackTrace();
         }
+
+        mImages.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, mImages.size());
+        Log.d(TAG, "remove size = " + mImages.size());
+        notifyDataSetChanged();
+
+
     }
 
 
     public ArrayList<Uri> getImageUris() {
 
-        if (mImages != null) {
+        if (!mImages.isEmpty()) {
+
+            Log.d(TAG, "getImagesUris != Null \n mImages.size() = " + mImages.size());
+
             for (Image imageuri : mImages) {
                 uris = imageuri.getSource();
 
                 mImagesUri.add(uris);
             }
-
+            Log.d(TAG, "getImagesUris != Null" + mImagesUri);
 
             return mImagesUri;
-        }
+
+
+        } else
+
+            Log.d(TAG, "getImagesUris = Null \n mImages.size() = " + mImages.size());
+
         return null;
+
     }
 
 }
